@@ -1,0 +1,27 @@
+root: true
+
+env:
+    browser: true
+    es2021: true
+    jest/globals: true
+extends:
+    - react-app
+    - react-app/jest
+    - 'plugin:react/recommended'
+    - 'plugin:jest/recommended'
+    - airbnb
+    - prettier
+parser: babel-eslint
+parserOptions:
+    ecmaFeatures:
+        jsx: true
+    ecmaVersion: 12
+    sourceType: module
+settings:
+    react:
+        version: detect
+plugins:
+    - react
+    - jest
+rules:
+    { react/react-in-jsx-scope: 'off', react/function-component-definition: 'off', react/jsx-filename-extension: 'off' }
