@@ -1,3 +1,103 @@
+# react-project について
+
+`creat-react-app`コマンドで作成したサンプルプロジェクト
+
+ファイル構成は以下の通り
+
+![react-projectファイル構成.png](https://qiita-image-store.s3.ap-northeast-1.amazonaws.com/0/1614172/a869972f-56f1-cd58-883a-467cae083604.png)
+
+src ディレクトリには自動生成された App.js や index.html がはいっている
+
+今後サンプル TODO アプリを作成していく
+
+完成見本（JS で作成した TODO）→[https://codesandbox.io/s/headless-surf-0bky8](https://codesandbox.io/s/headless-surf-0bky8)
+
+JavaScript で作成した TODO アプリを React を使って作成する
+
+## 開発環境
+
+### Visual Studio Code
+
+<aside>
+💻 バージョン: 1.62.2 (user setup)
+コミット: 3a6960b964327f0e3882ce18fcebd07ed191b316
+日付: 2021-11-11T20:56:38.428Z
+Electron: 13.5.2
+Chrome: 91.0.4472.164
+Node.js: 14.16.0
+V8: 9.1.269.39-electron.0
+OS: Windows_NT x64 10.0.19042
+
+</aside>
+
+### ESLint
+
+静的検証ツールとして ESLint を設定
+
+基本ルールとして**`eslint-config-airbnb`**を利用
+
+test コードのエラー解消の追加プラグインとして`eslint-plugin-jest`を利用
+
+設定内容は`.eslintrc.yml`
+
+### Prettier
+
+フォーマッターとして Prettir を設定
+
+設定のルールは`.prettirrc`ファイルに記述
+
+eslint との競合は`eslint-config-prettier`を開発依存に追加して解決
+
+eslint の設定は後勝ちするため`extends`の最後に`prettier`を記述する
+
+### 設定をオフにしたルール
+
+project 作成後 eslint の導入してすぐ、自動作成された js ファイルにエラーがでたため以下のルールをオフに設定している
+
+```yaml
+rules:
+{
+	react/react-in-jsx-scope: 'off',
+	react/function-component-definition: 'off',
+	react/jsx-filename-extension: 'off'
+}
+```
+
+上記ルールの他、個別ルールは開発を進めながら追加、削除を検討していく
+
+### VScode の設定
+
+`.vscode`ディレクトリ配下の`setting.json`に記述
+
+基本はウィザード形式で設定すれば勝手にファイルが作成され記述される
+
+選択できない設定については自分でファイルに記述が必要
+
+保存時とペースト時のフォーマットと、保存時のリンティングに関しては下記のように設定
+
+```json
+"editor.defaultFormatter": "esbenp.prettier-vscode",
+	"editor.codeActionsOnSave": {
+		"source.fixAll.eslint": true
+	},
+	"editor.formatOnPaste": true,
+	"editor.formatOnSave": true,
+```
+
+### GitHub で設定の共有
+
+上記設定ファイルを GitHub に Push して置くことで、共同開発者はこのプロジェクトファイルを Clone するだけで、設定で開発をすることができ、コードの一貫性を保つことができる
+
+また ESLint の検証によってコードレビューにかかるコストを削減できる
+
+node_modules は通常共有されていないが、package.json を共有することで同じものをインストールできるため、共有するファイルはそれだけで大丈夫
+
+手探りでの設定で今後開発を進める上で、修正をしていくようになると思うがいったんこの状態で共有する
+
+同じく学習をしている方の一つの参考程度になれば幸い
+
+↓↓ 以下は自動作成された README↓↓
+
 # Getting Started with Create React App
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
