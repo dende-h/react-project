@@ -7,8 +7,8 @@ env:
 extends:
     - react-app
     - react-app/jest
-    - 'plugin:react/recommended'
-    - 'plugin:jest/recommended'
+    - "plugin:react/recommended"
+    - "plugin:jest/recommended"
     - airbnb
     - prettier
 parser: babel-eslint
@@ -24,4 +24,9 @@ plugins:
     - react
     - jest
 rules:
-    { react/react-in-jsx-scope: 'off', react/function-component-definition: 'off', react/jsx-filename-extension: 'off' }
+    {
+        react/react-in-jsx-scope: "off",
+        react/function-component-definition: "off",
+        react/jsx-filename-extension: "off",
+        import/prefer-default-export: "off"
+    }
