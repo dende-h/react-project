@@ -7,9 +7,9 @@ env:
 extends:
     - react-app
     - react-app/jest
+    - eslint:recommended
     - "plugin:react/recommended"
     - "plugin:jest/recommended"
-    - airbnb
     - prettier
 parser: babel-eslint
 parserOptions:
@@ -28,5 +28,7 @@ rules:
         react/react-in-jsx-scope: "off",
         react/function-component-definition: "off",
         react/jsx-filename-extension: "off",
-        import/prefer-default-export: "off"
+        import/prefer-default-export: "off",
+        react/prop-types: "off",
+        no-unused-vars: "off"
     }
