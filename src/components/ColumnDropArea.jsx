@@ -1,17 +1,27 @@
 import React from "react";
 
 import styled from "styled-components";
+import { TodoText } from "./TodoText";
 
 const DropAreaContainer = styled.div`
-    background-color: rgb(159, 255, 255);
+    background-color:  ${(props) => {
+		const columnId = props.color;
+		switch (columnId) {
+			case "column-2":
+				return "rgb(159, 255, 255)";
+			case "column-3":
+				return "rgb(253, 255, 154)";
+			case "column-4":
+				return "rgb(255, 193, 255)";
+			default:
+				break;
+		}
+	}};
 		min-height: 100px;
 		border-radius: 20px;
 		margin: 4px;
 		padding: 4px;
 		padding-bottom: 50px;
-
-    display: flex;
-    flex-direction: column;
 `;
 
 const Title = styled.p`
@@ -21,27 +31,18 @@ const Title = styled.p`
 	  color: rgb(82, 82, 82);
 `;
 
-const TodoTextContainer = styled.div`
-	text-align: left;
-	background-color: rgb(255, 248, 239);
-	margin: 4px;
-	padding-left: 8px;
-	padding-right: 8px;
-	width: 150px;
-	border-radius: 2px;
-`;
-
 export const ColumnDropArea = (props) => {
-	const { dropZone, todoText } = props;
+	const { columns, task } = props;
 
 	return (
 		<>
-			<DropAreaContainer>
-				<Title>{dropZone.title}</Title>
-
-				<TodoTextContainer>
-					<p>{todoText.content}</p>
-				</TodoTextContainer>
+			<DropAreaContainer color={columns.id}>
+				<Title>{columns.title}</Title>
+				<div>
+					{task.map((todo) => (
+						<TodoText key={todo.id} todo={todo} />
+					))}
+				</div>
 			</DropAreaContainer>
 		</>
 	);
