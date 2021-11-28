@@ -9,10 +9,6 @@ main div {
 	text-align: center;
 }
 
-p {
-	overflow-wrap: break-word;
-}
-
 #edit-zone {
 	overflow-wrap: break-word;
 	text-align: left;

@@ -1,5 +1,5 @@
 import React from "react";
-
+import { Droppable } from "react-beautiful-dnd";
 import styled from "styled-components";
 
 const DeleteAreaContainer = styled.div`
@@ -11,6 +11,8 @@ const DeleteAreaContainer = styled.div`
 	font-size: 25px;
 	width: 646px;
 	height: 45px;
+
+  
 `;
 
 const Title = styled.p`
@@ -29,9 +31,17 @@ export const ColumnDeleteArea = (props) => {
 	const { deleteColumn } = props;
 	return (
 		<>
-			<DeleteAreaContainer>
-				<Title>{deleteColumn.title}</Title>
-			</DeleteAreaContainer>
+			<Droppable droppableId={deleteColumn.id}>
+				{(provided, snapshot) => (
+					<DeleteAreaContainer
+						ref={provided.innerRef}
+						{...provided.droppableProps}
+						isDraggingOver={snapshot.isDraggingOver}
+					>
+						<Title>{deleteColumn.title}</Title>
+					</DeleteAreaContainer>
+				)}
+			</Droppable>
 		</>
 	);
 };

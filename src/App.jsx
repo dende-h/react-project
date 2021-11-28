@@ -5,12 +5,13 @@ import { DragDropContext } from "react-beautiful-dnd";
 import { ColumnDropArea } from "./components/ColumnDropArea";
 import styled from "styled-components";
 import { ColumnDeleteArea } from "./components/ColumnDeleteArea";
+import { uuid } from "uuidv4";
 
 //import { uuid } from "uuidv4";
 
 const Container = styled.div`
-width: 200px;
-	display: inline-block;
+  width: 200px;
+	display: flex;
 	vertical-align: top;
 	text-align: center;
 
@@ -34,7 +35,6 @@ const DragDropObject = {
 
 export const App = () => {
 	const [todoText, setTodoText] = useState("");
-	const [todoArea, setTodoArea] = useState([]);
 	const [todoList, setTodoList] = useState(DragDropObject);
 
 	//inputにtodoの入力を反映させるchange関数
@@ -44,12 +44,100 @@ export const App = () => {
 	//ボタンをクリックした際に動く関数
 	const onClickButton = () => {
 		if (todoText === "") return; //テキストがなにも入力されてなければ何もしない
-		const newTodos = [...todoArea, todoText];
-		setTodoArea(newTodos);
+		const newTodoList = () => {
+			//新しいTodoIdsを配列に追加
+			const newTodoId = uuid();
+			console.log(newTodoId);
+			const todoTextSaveColumn = todoList.dropZone["column-2"].todoIds;
+			todoTextSaveColumn.push(newTodoId);
+
+			//新しいdragItemオブジェクトに追加
+			const newTodo = { id: newTodoId, content: todoText };
+			const newTodoTextList = todoList.dragItem;
+			newTodoTextList[newTodoId] = newTodo;
+			return todoList;
+		};
+		const newTodoListState = newTodoList();
+		setTodoList(newTodoListState);
 		setTodoText("");
 	};
 
-	const onDragEnd = () => {};
+	//DragDropContextのpropsドラッグが終了したときの処理
+	const onDragEnd = (result) => {
+		//並べ替えの処理
+		const { destination, source, draggableId } = result;
+		if (!destination) {
+			return;
+		}
+		if (destination.droppableId === source.droppableId && destination.index === source.index) {
+			return;
+		}
+
+		const start = todoList.dropZone[source.droppableId];
+		const finish = todoList.dropZone[destination.droppableId];
+		const del = todoList.dropZone[deleteZoneId];
+
+		if (start === finish) {
+			const newTaskIds = Array.from(start.todoIds);
+			newTaskIds.splice(source.index, 1);
+			newTaskIds.splice(destination.index, 0, draggableId);
+
+			const newColumn = {
+				...start,
+				todoIds: newTaskIds
+			};
+
+			const newState = {
+				...todoList,
+				dropZone: {
+					...todoList.dropZone,
+					[newColumn.id]: newColumn
+				}
+			};
+			setTodoList(newState);
+			return;
+		}
+		//削除の処理
+		if (finish === del) {
+			const startTaskIds = Array.from(start.todoIds);
+			startTaskIds.splice(source.index, 1);
+			const newStart = {
+				...start,
+				todoIds: startTaskIds
+			};
+			const newState = {
+				...todoList,
+				dropZone: {
+					...todoList.dropZone,
+					[newStart.id]: newStart
+				}
+			};
+			setTodoList(newState);
+			return;
+		}
+		//別のカラムに移動する処理
+		const startTaskIds = Array.from(start.todoIds);
+		startTaskIds.splice(source.index, 1);
+		const newStart = {
+			...start,
+			todoIds: startTaskIds
+		};
+		const finishTaskIds = Array.from(finish.todoIds);
+		finishTaskIds.splice(destination.index, 0, draggableId);
+		const newFinish = {
+			...finish,
+			todoIds: finishTaskIds
+		};
+		const newState = {
+			...todoList,
+			dropZone: {
+				...todoList.dropZone,
+				[newStart.id]: newStart,
+				[newFinish.id]: newFinish
+			}
+		};
+		setTodoList(newState);
+	};
 
 	//ColumnDeleteAreaコンポーネントに渡すpropsの定義
 	// "column-1"
@@ -60,12 +148,11 @@ export const App = () => {
 	//  { id: "column-1", title: "Delete", todoIds: [] }
 	const deleteColumn = todoList.dropZone[deleteZoneId];
 
-	//ColumnDropAreaコンポーネントに渡すpropsの定義
+	//ColumnDropAreaコンポーネントに渡すpropsの定義のためのフィルター
 	//["column-2", "column-3", "column-4"]
 	const columnsId = todoList.dropZoneOrder.filter((columnsId, index) => {
 		return index !== 0;
 	});
-	//[{ id: "column-2", title: "Todo", todoIds: ["todo-1", "todo-2"] },{ id: "column-3", title: "In progress", todoIds: [] },{ id: "column-4", title: "Done", todoIds: [] }]
 
 	return (
 		<>
@@ -77,8 +164,9 @@ export const App = () => {
 				<main>
 					<Container>
 						{columnsId.map((columnId) => {
-							const columns = todoList.dropZone[columnId];
-							const task = columns.todoIds.map((todoIds) => todoList.dragItem[todoIds]);
+							//マップ関数で繰り返しコンポーネントをリターンしそれぞれのカラムを表示させる
+							const columns = todoList.dropZone[columnId]; //columns=[column-2{...},column-3{...},column-4{...}]
+							const task = columns.todoIds.map((todoIds) => todoList.dragItem[todoIds]); //task=[todo-1{...},todo-2{},todo-3{},todo-4{...}] [] [] 3つの配列
 							return <ColumnDropArea key={columns.id} columns={columns} task={task} className="title" />;
 						})}
 					</Container>

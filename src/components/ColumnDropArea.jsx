@@ -1,10 +1,10 @@
 import React from "react";
-
+import { Droppable } from "react-beautiful-dnd";
 import styled from "styled-components";
 import { TodoText } from "./TodoText";
 
 const DropAreaContainer = styled.div`
-    background-color:  ${(props) => {
+  background-color: ${(props) => {
 		const columnId = props.color;
 		switch (columnId) {
 			case "column-2":
@@ -16,19 +16,27 @@ const DropAreaContainer = styled.div`
 			default:
 				break;
 		}
-	}};
-		min-height: 100px;
-		border-radius: 20px;
-		margin: 4px;
-		padding: 4px;
-		padding-bottom: 50px;
+  }};
+ margin: 1px;
+  border-radius: 20px;
+  width: 220px;
+
+  display: flex;
+  flex-direction: column;
 `;
 
-const Title = styled.p`
-    overflow-wrap: break-word;
-    margin-top: 5px;
-	  font-weight: bold;
-	  color: rgb(82, 82, 82);
+const Title = styled.h3`
+  padding: 2px;
+  font-weight: bold;
+  color: rgb(82, 82, 82);
+`;
+
+const DropArea = styled.div`
+  padding: 8px;
+  transition: background-color 0.2s ease;
+  background-color: ${(props) => props.isDraggingOver && "lightpink"};
+  flex-grow: 1;
+  min-height: 100px;
 `;
 
 export const ColumnDropArea = (props) => {
@@ -38,11 +46,22 @@ export const ColumnDropArea = (props) => {
 		<>
 			<DropAreaContainer color={columns.id}>
 				<Title>{columns.title}</Title>
-				<div>
-					{task.map((todo) => (
-						<TodoText key={todo.id} todo={todo} />
-					))}
-				</div>
+				<Droppable droppableId={columns.id}>
+					{(provided, snapshot) => (
+						<DropArea
+							ref={provided.innerRef}
+							{...provided.droppableProps}
+							isDraggingOver={snapshot.isDraggingOver}
+						>
+							{task.map(
+								(todo, index) => (
+									<TodoText key={todo.id} todo={todo} index={index} />
+								) //taskとして受け取った配列をマップ関数で繰り返し呼び出すTodoTextコンポーネントに渡す
+							)}
+							{provided.placeholder}
+						</DropArea>
+					)}
+				</Droppable>
 			</DropAreaContainer>
 		</>
 	);
