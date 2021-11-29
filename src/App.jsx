@@ -11,10 +11,9 @@ import { uuid } from "uuidv4";
 
 const Container = styled.div`
   width: 200px;
-	display: flex;
-	vertical-align: top;
-	text-align: center;
-
+  display: flex;
+  vertical-align: top;
+  text-align: center;
 `;
 
 const DragDropObject = {
@@ -26,7 +25,11 @@ const DragDropObject = {
 	},
 	dropZone: {
 		"column-1": { id: "column-1", title: "Delete" },
-		"column-2": { id: "column-2", title: "Todo", todoIds: ["todo-1", "todo-2", "todo-3", "todo-4"] },
+		"column-2": {
+			id: "column-2",
+			title: "Todo",
+			todoIds: ["todo-1", "todo-2", "todo-3", "todo-4"]
+		},
 		"column-3": { id: "column-3", title: "In progress", todoIds: [] },
 		"column-4": { id: "column-4", title: "Done", todoIds: [] }
 	},
@@ -36,6 +39,7 @@ const DragDropObject = {
 export const App = () => {
 	const [todoText, setTodoText] = useState("");
 	const [todoList, setTodoList] = useState(DragDropObject);
+	const [inputMessFlag, setInputMessFlag] = useState(false);
 
 	//inputにtodoの入力を反映させるchange関数
 	const onChangeTodoText = (event) => {
@@ -43,7 +47,10 @@ export const App = () => {
 	};
 	//ボタンをクリックした際に動く関数
 	const onClickButton = () => {
-		if (todoText === "") return; //テキストがなにも入力されてなければ何もしない
+		if (todoText === "") {
+			setInputMessFlag(true);
+			return;
+		} //テキストがなにも入力されてなければメッセフラグがtrueになる
 		const newTodoList = () => {
 			//新しいTodoIdsを配列に追加
 			const newTodoId = uuid();
@@ -55,28 +62,31 @@ export const App = () => {
 			const newTodo = { id: newTodoId, content: todoText };
 			const newTodoTextList = todoList.dragItem;
 			newTodoTextList[newTodoId] = newTodo;
+			console.log(todoList);
 			return todoList;
 		};
 		const newTodoListState = newTodoList();
 		setTodoList(newTodoListState);
+		setInputMessFlag(false);
 		setTodoText("");
 	};
 
 	//DragDropContextのpropsドラッグが終了したときの処理
 	const onDragEnd = (result) => {
-		//並べ替えの処理
 		const { destination, source, draggableId } = result;
 		if (!destination) {
 			return;
 		}
 		if (destination.droppableId === source.droppableId && destination.index === source.index) {
+			//console.log(destination.droppableId);
+			//console.log(source.droppableId);
 			return;
 		}
 
 		const start = todoList.dropZone[source.droppableId];
 		const finish = todoList.dropZone[destination.droppableId];
 		const del = todoList.dropZone[deleteZoneId];
-
+		//同じカラムでの並べ変え処理
 		if (start === finish) {
 			const newTaskIds = Array.from(start.todoIds);
 			newTaskIds.splice(source.index, 1);
@@ -97,14 +107,16 @@ export const App = () => {
 			setTodoList(newState);
 			return;
 		}
-		//削除の処理
+		//削除エリアにドロップしたときの処理
 		if (finish === del) {
+			//console.log(destination.droppableId);
 			const startTaskIds = Array.from(start.todoIds);
 			startTaskIds.splice(source.index, 1);
 			const newStart = {
 				...start,
 				todoIds: startTaskIds
 			};
+			//console.log(newStart);
 			const newState = {
 				...todoList,
 				dropZone: {
@@ -115,7 +127,8 @@ export const App = () => {
 			setTodoList(newState);
 			return;
 		}
-		//別のカラムに移動する処理
+		// console.log(finish);
+		//別カラムに移動したときの処理
 		const startTaskIds = Array.from(start.todoIds);
 		startTaskIds.splice(source.index, 1);
 		const newStart = {
@@ -158,6 +171,7 @@ export const App = () => {
 		<>
 			<h1>TODOボード</h1>
 			<InputTodo todoText={todoText} onChange={onChangeTodoText} onClick={onClickButton} />
+			{inputMessFlag && <p style={{ color: "red" }}>TODOが入力されてません！！</p>}
 			<DragDropContext onDragEnd={onDragEnd}>
 				<ColumnDeleteArea key={deleteZoneId} deleteColumn={deleteColumn} />
 

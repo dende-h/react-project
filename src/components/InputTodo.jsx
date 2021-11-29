@@ -12,17 +12,17 @@ const InputArea = styled.div`
 `;
 
 const ButtonStyle = styled.button`
-	border-radius: 5px;
-	border: none;
-	padding: 4px 16px;
-	margin-top: 4px;
-	background-color: rgb(252, 135, 154);
-	color: white;
-	button:hover {
-	cursor: pointer;
-	background-color: rgb(255, 51, 51);
-	color: black;
-}
+border-radius: 5px;
+  border: none;
+  padding: 4px 16px;
+  margin-top: 4px;
+  background-color: rgb(252, 135, 154);
+  color: white;
+  &:hover {
+    cursor: pointer;
+    background-color: orange;
+    color: lightslategray;
+  }
 `;
 
 const InputTodoArea = styled.input`
