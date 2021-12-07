@@ -12,7 +12,7 @@ src ディレクトリには自動生成された App.js や index.html がは�
 
 完成見本（JS で作成した TODO）→[https://codesandbox.io/s/headless-surf-0bky8](https://codesandbox.io/s/headless-surf-0bky8)
 
-JavaScript で作成した TODO アプリを React を使って作成する
+現在の開発状況　→　https://kw2tz.csb.app/
 
 ## 開発環境
 
