@@ -1,20 +1,18 @@
-import { Box, Flex, Input } from "@chakra-ui/react";
-import React, { memo } from "react";
+import { memo } from "react";
 import styled from "styled-components";
-import { v4 } from "uuid";
 import { useInputTodo } from "../hooks/useInputTodo";
-import { PrimaryButton } from "./button/PrimaryButton";
 
-export const InputTodo = memo(() => {
-	console.log("InputTodo");
-	const { onClick, onChange, todoText } = useInputTodo(true, v4());
+export const TextEditForm = memo((props) => {
+	console.log("TextEditForm");
+	const { buttonName, placeholder, id } = props;
+	const { onChange, onClick, todoText } = useInputTodo(false, id);
 
 	return (
 		<>
-			<Flex bg="rgb(252, 235, 170)" w="full" h="55px" text-align="center" padding="2">
-				<Input bg="white" variant="outline" value={todoText} onChange={onChange} placeholder="TODOを入力" />
-				<PrimaryButton onClick={onClick}>付箋を貼る</PrimaryButton>
-			</Flex>
+			<InputArea>
+				<InputTodoArea value={todoText} onChange={onChange} placeholder={placeholder} />
+				<ButtonStyle onClick={onClick}>{buttonName}</ButtonStyle>
+			</InputArea>
 		</>
 	);
 });
@@ -23,7 +21,7 @@ export const InputTodo = memo(() => {
 const InputArea = styled.div`
   width: 646px;
   height: 40px;
-  background-color: rgb(252, 235, 170);
+
   text-align: center;
   margin: 4px;
   border-radius: 10px;

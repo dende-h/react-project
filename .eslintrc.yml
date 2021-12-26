@@ -30,5 +30,7 @@ rules:
         react/jsx-filename-extension: "off",
         import/prefer-default-export: "off",
         react/prop-types: "off",
-        no-unused-vars: "off"
+        no-unused-vars: "off",
+        react/display-name: "off",
+        react-hooks/exhaustive-deps: "off"
     }
